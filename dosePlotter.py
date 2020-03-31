@@ -1,5 +1,5 @@
 from matplotlib import pyplot
-# import numpy
+import numpy as np
 import math
 
 
@@ -15,6 +15,7 @@ def plotGraph(dose):
     # declare variables
     lamb = math.log(2) / 12  # time will be in terms of 12 hour intervals
     scene = []
+    t = np.arange(0, 12*121*2, 12)
 
     # determine starting point for each new day
     for i in range(len(dose)):
@@ -23,14 +24,15 @@ def plotGraph(dose):
             if (j == 0):
                 nextList.append(dose[i][j])
             else:
-                nextList.append(nextX(dose[i-1], lamb))
-        scene[i].append(nextList)
+                nextList.append(dose[i][j-1] + nextX(dose[i][j-1], lamb))
+        scene.append(nextList)
 
     # Plot dosages
-    pyplot.plot(map(nextX, scene[0]))
-    pyplot.plot(map(nextX, scene[1]))
-    pyplot.plot(map(nextX, scene[2]))
-    pyplot.plot(map(nextX, scene[3]))
+    pyplot.plot(t, np.asarray(scene[0]))
+    pyplot.plot(t, np.asarray(scene[1]))
+    pyplot.plot(t, np.asarray(scene[2]))
+    pyplot.plot(t, np.asarray(scene[3]))
+    pyplot.show()
 
 
 def main():
@@ -39,7 +41,7 @@ def main():
     dose = []
 
     for i in range(4):
-        dose[i] = []
+        dose.append([])
         for j in range(21):
             dose[i].append(doseA)
             dose[i].append(0)
@@ -56,13 +58,15 @@ def main():
         dose[1].append(doseB)
         dose[1].append(0)
 
-    for i in range(34):
+    for i in range(33):
         dose[2].append(doseA)
         dose[2].append(0)
         dose[2].append(doseB)
         dose[2].append(0)
         dose[2].append(doseB)
         dose[2].append(0)
+    dose[2].append(doseA)
+    dose[2].append(0)
 
     for i in range(20):
         dose[3].append(doseA)
